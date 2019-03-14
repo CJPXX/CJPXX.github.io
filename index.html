@@ -175,12 +175,50 @@ VALUES(值1,值2,...,值n),
 <pre><code>DELETE FROM 表名;
 或  TRUNCATE[table] 表名;
 即  TRUNCATE TABLE 表名;
-</code></pre><p>   delete语句是DML语句,TRUNCATE语句通常被认为是DDL语句<br>   TRUNCATE语句比DELETE语句速度更快,而且使用系统和事物日志资源更少<br>……. </p>
+</code></pre><p>   delete语句是DML语句,TRUNCATE语句通常被认为是DDL语句<br>   TRUNCATE语句比DELETE语句速度更快,而且使用系统和事物日志资源更少</p>
+<p> 2019/3/15 0:28:44</p>
+<h2 id="6-数据查询"><a href="#6-数据查询" class="headerlink" title="6.数据查询"></a>6.数据查询</h2><p>  <strong>1.简单查询</strong></p>
+<pre><code>要查询的字段和从那一个表查询（查询时,字段名可以不和表字段名顺序一致,查询结果与一致结果一样)
+
+        SELECT 字段名1,字段名2,....
+        FROM 表名；
+
+        查询输出某个表的所有信息
+        SELECT * FROM 表名;
+</code></pre><p>  <strong>2.给列取别名</strong></p>
+<pre><code>1: 列名 AS 别名
+2: 列名 别名 
+</code></pre><p>  <strong>3.使用distinct关键字取消重复查询结果</strong> (例如有班级,可能会重复,当加入DISTINCT 关键字时候,就不会出现重复的关键字)</p>
+<pre><code>SELECT DISTINCT 列名 FROM 表名
+</code></pre><p>  <strong>4.使用WHERE子句查询</strong><br>   使用WHERE子句 在SELECT语句中,最常见的是通过WHERE子句指定查询条件,对数据经行过滤。</p>
+<pre><code>SELECT 字段名1,字段名2,......FROM 表名
+WHERE 条件表达式;
+例如:SELECT b_name from book1 where b_price&gt;30;  //查询book表中 价格(price)大于30的图书名字(b_name)
+        SELECT * from book1 where b_price&gt;30;   //查询book表中 价格(price)大于30的图书所有信息
+</code></pre><p>  <strong>5.使用模式匹配字符串进行模糊查询</strong></p>
+<p>   在指定的条件不是很明确的情况下，可以使用LIKE运算符与模式字符串经行匹配运算。<br>   <code>列名[NOT] LIKE</code> ‘模式字符串’</p>
+<p>  (1）列名:指明进行匹配的列。列的数据类型可以是字符型或日期型</p>
+<p>  (2)  模式字符串:可以是一般字符串,也可以是包含通配符的字符串。通配符种类如下所示</p>
+<p>   通配符 </p>
+<p>   %                                匹配任意长度(0个或多个)的字符串<br>   _                                  匹配任意单个字符 </p>
+<pre><code>SELECT * FROM 表名 WHERE 列名 LIKE &apos;字符串%&apos; AND 条件2;
+SELECT * FROM 表名 WHERE 列名 LIKE &apos;字符串_&apos; AND 条件2;
+</code></pre><p>   （多个条件时候WHERE 条件1 AND 条件2 AND …;)<br>效果截图<br><img src="https://i.imgur.com/3G2O8ZE.png" alt><br> <strong>6.使用ORDER BY子句对查询结果排序</strong><br>   在查询结果集中,数据行的排列顺序是按他们在表中顺序进行排序的。可以使用ORDEY BY子句对<br>   结果集中的数据按指定的值重新排序。</p>
+<pre><code>SELECT [ALL|DISTINCT] 要查询的内容
+FROM 表名
+[WHERE 条件表达式]
+ORDER BY 列名[ASC|DESC];
+</code></pre><p>   ASC：按升序排列(默认)<br><br>   DESC:按降序排列<br><br>   可以在ORDER BY子句中指定多个列,查询结果首先按第一列进行排序，第一列值相同的那些数据行,再按照第二列排序,以此类推;<br>   ORDER BY子句要写在WHERE子句后面。 </p>
+<pre><code>//查询出版社为(b_press)清华大学出版社的图书信息，并按照价格(b_price)降序输出
+
+select * FROM book1 WHERE b_press=&apos;清华大学出版社&apos; ORDER BY b_price ASC;
+</code></pre><p>效果结果:<br>   <img src="https://i.imgur.com/WEmh0GK.png" alt></p>
+<p>2019/3/15 0:48:45 </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjt74lyeg0000zkwbxdr6zudi" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjt752zl80001kowbg7ltuwue" class="article-share-link">Share</a>
       
       
     </footer>
@@ -225,7 +263,7 @@ VALUES(值1,值2,...,值n),
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjt74lyem0001zkwbfphbtr4f" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjt752zl10000kowbgtrtl6wk" class="article-share-link">Share</a>
       
       
     </footer>
