@@ -21,7 +21,13 @@
 <meta property="og:image" content="https://i.imgur.com/oKdOyQ3.png">
 <meta property="og:image" content="https://i.imgur.com/naSZoW6.png">
 <meta property="og:image" content="https://i.imgur.com/7S1uDxh.png">
-<meta property="og:updated_time" content="2019-03-16T03:46:48.527Z">
+<meta property="og:image" content="https://i.imgur.com/9BmIXfQ.png">
+<meta property="og:image" content="https://i.imgur.com/VoYCWCg.png">
+<meta property="og:image" content="https://i.imgur.com/hK73SJN.png">
+<meta property="og:image" content="https://i.imgur.com/gDwluZy.png">
+<meta property="og:image" content="https://i.imgur.com/PEAksCa.png">
+<meta property="og:image" content="https://i.imgur.com/1ZbRlJd.png">
+<meta property="og:updated_time" content="2019-03-16T10:40:27.097Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库基本操作">
 <meta name="twitter:description" content="数据库的基本操作：启动数据库:mysql -uroot -p; 退出数据库: quit; 1.数据库的基本操作创建数据库  CREATE DATABASE 数据库名字 查看数据库     SHOW DATABASE 查看某个已创建数据库信息  SHOW CREATE DATABASE 数据库名称 修改数据库 修改数据库编码  ALTER DATABASE xxgc DEFAULT CHARACTE">
@@ -187,7 +193,7 @@ VALUES(值1,值2,...,值n),
 即  TRUNCATE TABLE 表名;
 </code></pre><p>   delete语句是DML语句,TRUNCATE语句通常被认为是DDL语句<br>   TRUNCATE语句比DELETE语句速度更快,而且使用系统和事物日志资源更少</p>
 <p> 2019/3/15 0:28:44</p>
-<h2 id="6-数据查询"><a href="#6-数据查询" class="headerlink" title="6.数据查询"></a>6.数据查询</h2><p>  <strong>1.简单查询</strong></p>
+<h2 id="7-数据查询"><a href="#7-数据查询" class="headerlink" title="7.数据查询"></a>7.数据查询</h2><p>  <strong>1.简单查询</strong></p>
 <pre><code>要查询的字段和从那一个表查询（查询时,字段名可以不和表字段名顺序一致,查询结果与一致结果一样)
 
         SELECT 字段名1,字段名2,....
@@ -257,11 +263,34 @@ GROUP BY 列名列表
 <p>   s_sex未使用集合函数必须包含再GROUP BY子句中<br><br>   CIUNT(*)使用了集合函数放在GROUP BY子句后<br>   <hr><br>   GROUP BY子句常和HAVING子句配合使用.HAVING子句只能出现在GROUP BY子句后,<br>   用于将分组后的结果进行二次筛选<br><br>   效果截图:</p>
 <p>   <img src="https://i.imgur.com/7S1uDxh.png" alt></p>
 <p>2019/3/16 11:46:46 </p>
+<p> <strong>3.多表查询</strong></p>
+<p>   在实际查询中，很多情况下用户所需的数据并不是全部在一个表或视图中,而是存在于多个表或视图中，这时候就需要是用多表查询。多表连接查询是通过各个表之间共同列的相关性来查询数据的。多表连接<br>   查询首先要在表中建立连接，再在连接生成的结果集中进行筛选。</p>
+<p>   <strong>1.内连接查询</strong><br>   内链接是指用比较运算符设置连接条件，只返回满足连接条件的数据行，等于是将交叉连接生成的<br>   结果集按照连接条件进行筛选后形成的。</p>
+<pre><code>   SELECT 列名
+FROM 表名1[INNER]JOIN 表名2
+ON 表 AS.列名 比较运算符 表名2.列名;
+
+SELECT 列名 FROM 表名1.列名 比较运算符 表2.列名
+</code></pre><p>   例如：查询成绩小于60的学生信息<br>   <img src="https://i.imgur.com/9BmIXfQ.png" alt><br>   <img src="https://i.imgur.com/VoYCWCg.png" alt><br>   成绩大于60的学生<br>   <img src="https://i.imgur.com/hK73SJN.png" alt></p>
+<p>  <strong>2.外连接查询</strong><br>   外连接与内链接不同,在查询时所用的表有主从之分。使用外连接时，如果符合连接条件则返回到结果集<br>   中；如果没有找到区配行，则在结果集中仍然保留主表的行，相对应的从表中的列被填上NULL值 </p>
+<pre><code>SELECT 列名
+FROM 表1 LEFT|RIGHT|FULL JOIN 表名2  \\LEFT:左外连接  RIGHT:右外连接 FULL全外连接
+ON 表名1.列名 比较运算符 表名2.列名;
+</code></pre><p>  外连接只同时适用于两个表连接<br><br>  <strong>LEFT  JOIN左外连接</strong>:即左表为主表,关键字左边的表为左表,右边的表为右表。将左表中所有数据行与右表中的每行连接进行匹配，结果集包括坐标中所有行。<br><br>  <strong>RIGHT JOIN右外连接</strong>：关键字右边的表为右表，将右表的所有数据与左表中的每行按连接条件进行匹配，结果集包括右表中的所有行<br><br>  <strong>FULL JOIN</strong>：该链接查询到的结果集包括两个连接表的所有行，坐标中每一行在右表中有匹配数据，则结果集对应右表的列填入相应数据，否则填为NULL。</p>
+<pre><code>例子:查询学生选课数据库,输出所有教师所教授的课程信息，没有教授课程的教室也要列出。
+SELECT *
+   FROM techer AS t LEFT JOIN course AS c 
+ON t.id=c.ctno;
+</code></pre><p>\由题最后一句可知，教师表为主表 放在LEFT左边,course课程表为从表，放在LEFT JOIN右边 使用RIGHT JOIN则相反</p>
+<p>  效果图:<br> <img src="https://i.imgur.com/gDwluZy.png" alt></p>
+<p> <strong>3.自连接查询</strong><br>   就是一个表的两个副本之间的内连接。同一个表在FROM中出现两次，故为了区别，必须对表指定不同的别名<br> ，语句中使用的列名前也要加上表的别名进行限定。</p>
+<p>   例子：查询和学号“11101002”在同一个班的学生的学号和姓名<br>   <img src="https://i.imgur.com/PEAksCa.png" alt><br>   或<br>   <img src="https://i.imgur.com/1ZbRlJd.png" alt></p>
+<p>2019/3/16 18:40:25 </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjt8vd1q5000118wbzqsph0f6" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjtbd205u00013cwb1icetcy8" class="article-share-link">Share</a>
       
       
     </footer>
