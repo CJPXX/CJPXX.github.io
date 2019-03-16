@@ -16,7 +16,12 @@
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://i.imgur.com/3G2O8ZE.png">
 <meta property="og:image" content="https://i.imgur.com/WEmh0GK.png">
-<meta property="og:updated_time" content="2019-03-14T16:48:48.482Z">
+<meta property="og:image" content="https://i.imgur.com/G2k2uMj.png">
+<meta property="og:image" content="https://i.imgur.com/t4kOSN9.png">
+<meta property="og:image" content="https://i.imgur.com/oKdOyQ3.png">
+<meta property="og:image" content="https://i.imgur.com/naSZoW6.png">
+<meta property="og:image" content="https://i.imgur.com/7S1uDxh.png">
+<meta property="og:updated_time" content="2019-03-16T03:46:48.527Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库基本操作">
 <meta name="twitter:description" content="数据库的基本操作：启动数据库:mysql -uroot -p; 退出数据库: quit; 1.数据库的基本操作创建数据库  CREATE DATABASE 数据库名字 查看数据库     SHOW DATABASE 查看某个已创建数据库信息  SHOW CREATE DATABASE 数据库名称 修改数据库 修改数据库编码  ALTER DATABASE xxgc DEFAULT CHARACTE">
@@ -219,11 +224,44 @@ ORDER BY 列名[ASC|DESC];
 select * FROM book1 WHERE b_press=&apos;清华大学出版社&apos; ORDER BY b_price ASC;
 </code></pre><p>效果结果:<br>   <img src="https://i.imgur.com/WEmh0GK.png" alt></p>
 <p>2019/3/15 0:48:45 </p>
+<h2 id="2-统计查询"><a href="#2-统计查询" class="headerlink" title="2.统计查询"></a>2.统计查询</h2><p> <strong>1.如何使用集合函数</strong><br>  COUNT([DISTINCT|ALL]列表达式|<em>)   计算一列中值的个数，COUNT(</em>)返回行数，包含有空值的行,不能和DISTINCT一起使用。</p>
+<pre><code>SELECT COUNT(*) AS 自定义查询名字 
+FROM students;
+</code></pre><p>  例如<br>    <img src="https://i.imgur.com/G2k2uMj.png" alt> </p>
+<p>  SUM([DISTINCT|ALL]列表达式)   计算一列数据的总和(此列为数据类型）</p>
+<pre><code>SELECT SUM(字段名) AS 自定义名
+</code></pre><p>  AVG([DISTINCT|ALL]列表达式)计算一列数据的平均值(此列为数据类型）</p>
+<pre><code>SELECT AVG(字段名) AS 自定义名
+</code></pre><p>  MAX([DISTINCT|ALL]列表达式)   计算一列数据最大值</p>
+<pre><code>SELECT MAX(字段名) AS 自定义名
+</code></pre><p>  MIN([DISTINCT|ALL]列表达式)    计算一列数据最小值</p>
+<pre><code>SELECT MIN(字段名) AS 自定义名
+</code></pre><p> （几个集合函数可以同时使用如)</p>
+<pre><code>SELECT count(*) as 自定义名,  \\总记录数
+SUM(字段名) AS 自定义名,      \\某列总和
+AVG(字段名) AS 自定义名,      \\ 某列平均值
+MIN(字段名) AS 自定义名,      \\某列最大值
+MIN(字段名) AS 自定义名      \\某列最小值
+FROM 表名
+[WHERE 条件]；
+</code></pre><p> 效果截图：<br>    <img src="https://i.imgur.com/t4kOSN9.png" alt></p>
+<p>  <img src="https://i.imgur.com/oKdOyQ3.png" alt></p>
+<p> <strong>2.如何使用GROUP BY子句</strong><br>   GROUP BY子句用于对查询结果集按指定列的值进行分组,<br><br>   列值相同放在一组。集合函数和GROUP BY子句配合使用,<br>   将对查询结果集进行分组统。</p>
+<pre><code>SELECT [ALL|DISTINCT0] 要查询的内容
+FROM 表名
+[WHERE 条件表达式]
+GROUP BY 列名列表
+[HAVING 条件表达式] 
+</code></pre><p>   GROUP BY子句进行分组统计时，SELECT子句中的<br><br>   列表表达式所包含的列只能是如下两种情况<br><br>   应用了集合函数<br><br>   未应用集合函数的列必须包含再GROUP BY子句中<br><br>   效果截图：</p>
+<p>   <img src="https://i.imgur.com/naSZoW6.png" alt></p>
+<p>   s_sex未使用集合函数必须包含再GROUP BY子句中<br><br>   CIUNT(*)使用了集合函数放在GROUP BY子句后<br>   <hr><br>   GROUP BY子句常和HAVING子句配合使用.HAVING子句只能出现在GROUP BY子句后,<br>   用于将分组后的结果进行二次筛选<br><br>   效果截图:</p>
+<p>   <img src="https://i.imgur.com/7S1uDxh.png" alt></p>
+<p>2019/3/16 11:46:46 </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjt752zl80001kowbg7ltuwue" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjt8vd1q5000118wbzqsph0f6" class="article-share-link">Share</a>
       
       
     </footer>
