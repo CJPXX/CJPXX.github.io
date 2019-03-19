@@ -88,7 +88,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/19/关于JAVA的学习/" data-id="cjtezvt9t0000l0wb3zej3bkz" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/19/关于JAVA的学习/" data-id="cjtf757gt00011owbtv5eiw46" class="article-share-link">Share</a>
       
       
     </footer>
@@ -306,11 +306,51 @@ ON t.id=c.ctno;
 <p> <strong>3.自连接查询</strong><br>   就是一个表的两个副本之间的内连接。同一个表在FROM中出现两次，故为了区别，必须对表指定不同的别名<br> ，语句中使用的列名前也要加上表的别名进行限定。</p>
 <p>   例子：查询和学号“11101002”在同一个班的学生的学号和姓名<br>   <img src="https://i.imgur.com/PEAksCa.png" alt><br>   或<br>   <img src="https://i.imgur.com/1ZbRlJd.png" alt></p>
 <p>2019/3/16 18:40:25 </p>
+<p> <strong>4.子查询</strong></p>
+<p>   <strong>1.批量子比较查询</strong><br></p>
+<p>  是指子查询的结果不止一个，而且父查询和子查询之间又需要用比较运算符进行连接，<br>  这时候，就需要在子查询前面加上ALL或ANY这样所谓的谓词。<br></p>
+<p>  <strong>ANY谓词</strong>:在子查询前面使用ANY谓词时,会使用指定的比较运算符将一个表达式的值或列值返回<br>  值中的每一个进行比较，只有一次比较结果为TRUE，则整个表达式为TRUE，否则为FALSE</p>
+<pre><code>select 要查询的字段名 AS 自定义字段名
+FROM 表1名
+WHERE 关联字段=ANY(SELECT 关联字段 FROM 表2名WHERE 约束字段名&lt;60);
+</code></pre><p> <strong>ALL谓词:</strong> 在子查询前面使用ALL谓词时。会使用指定的运算发将一个表达式的值或列值与子查询返回值中的每一个经行比较，只有所有比较的结果为TRUE，整个表达式的值为TRUE，否则为FAULS。<br>   例如:查询选课数据库，输出将要补考学生的姓名？就是    s_cj&lt;60  </p>
+<pre><code>select s_nameAS 补考学生
+FROM st
+WHERE s_id=ANY(SELECT s_id FROM cj WHERE ck_cj&lt;60);            
+//ANY:只要是满足任意一个子查询条件的，都将它做为补考学生出现在结果集上
+</code></pre><p><img src="https://i.imgur.com/0yVlS6l.png" alt></p>
+<p>  <strong>2.in子查询</strong><br><br>IN子查询是指父查询与自子查询之间用IN或NOT IN进行连接，判断某个属性的列值是否在子查询找到的集合中</p>
+<pre><code>select 要查询的字段名 AS 自定义字段名
+FROM 表1名
+WHERE 关联字段 IN(SELECT 关联字段 FROM 表2名WHERE 约束条件)；
+</code></pre><p>例如：查询学生选课数据库，输出考试不及格的学生的姓名</p>
+<pre><code>select s_name AS 考试不及格学生
+FROM st
+WHERE s_id IN(SELECT s_id FROM cj WHERE ck_cj&lt;60);
+</code></pre><p><img src="https://i.imgur.com/4hClw49.png" alt></p>
+<p>在返回结果集不止一个的情况下用批量子查询和IN子查询都是可以的</p>
+<p>  <strong>3.EXISTS子查询</strong><br><br>   EXISTS子查询是指在子查询前面加EXISTS运算符或 NOT EXISTS运算符。<br><br>   EXISTS运算符和后面的子查询构成EXISTS表达式<br>   如果子查询查找到有满足条件的数据行，那么EXISTS表达式返回值为TRUE，否则为FALSE。</p>
+<p>   例如：查询教师表中，若时不存在教师授课为“信息工程”的教师，则显示所有教师的姓名和所授课程。</p>
+<pre><code>select ck_js ck_name
+FROM kc
+WHERE NOT EXISTS(SELECT * FROM kc WHERE ck_name=&apos;信息工程&apos;);
+</code></pre><p>  截图<br>    <img src="https://i.imgur.com/hp3TbH3.png" alt><br>   查询教师表中，若时存在教师授课为“信息工程”的教师，则显示所有教师的姓名和所授课程。</p>
+<pre><code>select ck_js,ck_name
+FROM kc
+WHERE EXISTS(SELECT * FROM kc WHERE ck_name=&apos;信息工程&apos;); 
+</code></pre><p>  截图<br>   <img src="https://i.imgur.com/zjuphP5.png" alt></p>
+<h2 id="7-存储过程和事物"><a href="#7-存储过程和事物" class="headerlink" title="7.存储过程和事物"></a>7.存储过程和事物</h2><p>   在数据库开发过程中，我们经常将一些反复调用的语句放置在一些独立的语句块中，这些独立的语句块我们称之为存储过程。<br><br>   <strong>1.创建和执行存储过程</strong><br>   创建存储过程语法格式如下：</p>
+<pre><code>CREATE PROCEDOURE sp_name ([proc_parameter[,...]])
+[characteristic...] routine_body
+</code></pre><p> 例如：创建存储事物为 查询教师表，输出所有教“信息工程”的老师的信息<br>  截图:<br><img src="https://i.imgur.com/WKgN9NO.png" alt></p>
+<p>   <strong>1.1 创建新的带参数的存储过程</strong></p>
+<p>  截图：<br><img src="https://i.imgur.com/9axzVsb.png" alt></p>
+<p>2019/3/19 23:09:24 </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjtezvtba0002l0wb8zd6t6jq" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjtf757h600021owbp9fpgkcn" class="article-share-link">Share</a>
       
       
     </footer>
@@ -355,7 +395,7 @@ ON t.id=c.ctno;
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjtezvtb40001l0wbmaeszci9" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjtf757go00001owby2axh7ca" class="article-share-link">Share</a>
       
       
     </footer>
