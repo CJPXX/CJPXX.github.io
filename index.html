@@ -62,6 +62,301 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-java之jdbc增删查改" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/03/20/java之jdbc增删查改/" class="article-date">
+  <time datetime="2019-03-20T13:30:21.000Z" itemprop="datePublished">2019-03-20</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/20/java之jdbc增删查改/">java之jdbc增删查改</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="创建JDBC应用程序设计以下6个步骤"><a href="#创建JDBC应用程序设计以下6个步骤" class="headerlink" title="创建JDBC应用程序设计以下6个步骤"></a>创建JDBC应用程序设计以下6个步骤</h2><p> <strong>1.导入包：</strong>需要包含包含数据库编程所需的JDBC类的包。大多数情况下，使用import java.sql.*就足够了。<br><br>    <strong>2.注册JDBC驱动程序：</strong>需要初始化驱动程序，以便可以打开与数据库的通信通道。<br><br>    <strong>3.打开一个连接：</strong>使用需要DriverManager.getConnection()方法创建??一个Connection对象，它表示与数据库的物理连接。<br><br>    <strong>4.执行查询：</strong>使用需要类型为Statement的对象来构建状语从句：提交SQL语句到数据库。<br>    <strong>5.从结果集中提取数据：</strong>使用需要相应的ResultSet.getXXX()方法从查询查询结果集中检索数据。<br><br>    <strong>6.清理环境：</strong>需要明确地关闭所有数据库资源，而不依赖于JVM的垃圾收集。</p>
+<hr>
+<p><strong>JDBC-连接数据库-查询数据库</strong></p>
+<pre><code>public class Demo1Conn {
+//驱动名称和数据库URL
+ static final String JDBC_DRIVER=&quot;com.mysql.cj.jdbc.Driver&quot;;
+ static final String DB_URL=&quot;jdbc:mysql://localhost/xxgc?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;useSSL=false&quot;;
+ //数据库用户名和密码
+ static final String username=&quot;root&quot;;
+ static final String password=&quot;ss707078&quot;;
+
+public static void main(String[] args) {
+    Connection conn=null;
+    Statement stmt=null;
+    try{
+    //STEP 2: Register JDBC driver 步骤2:注册JDBC驱动
+    Class.forName(JDBC_DRIVER);
+   //STEP 3: Open a connection     步骤3:打开连接
+        System.out.println(&quot;连接到数据库......&quot;);
+        conn=DriverManager.getConnection(DB_URL,username,password);
+    //STEP 4: Execute a query   步骤4:执行查询
+        System.out.println(conn);
+        System.out.println(&quot;正在执行查询......&quot;);
+        stmt =conn.createStatement();// conn.createStatement()   根据连接获取一个执行sql语句的对象
+        String sql;
+        sql=&quot;SELECT s_id,s_name,s_sex,s_age,s_class FROM students&quot;;
+        ResultSet rs=stmt.executeQuery(sql); //stmt.executeQuery(sql) stmt对象的executeQuery(sql)方法 执行sql命令
+
+   //STEP 5: Extract data from result set   步骤5:从结果集中提取数据
+        while (rs.next()){
+          //Retrieve by column name 按列名检索
+           int id=rs.getInt(&quot;s_id&quot;);
+           String name=rs.getString(&quot;s_name&quot;);
+            String sex=rs.getString(&quot;s_sex&quot;);
+           int age=rs.getInt(&quot;s_age&quot;);
+           String bj=rs.getString(&quot;s_class&quot;);
+            //Display values 显示值
+            System.out.print(&quot;学号：&quot;+id);
+            System.out.print(&quot;  姓名：&quot;+name);
+            System.out.print(&quot;  年龄：&quot;+age);
+            System.out.print(&quot;  性别：&quot;+sex);
+            System.out.println(&quot;  班级：&quot;+bj);
+            System.out.println(&quot;================================================================================&quot;);
+        }
+       //STEP 6: Clean-up environment  清理环境，关闭连接
+        rs.close();
+        stmt.close();
+        conn.close();
+    }catch (ClassNotFoundException e){
+        System.out.println(&quot;驱动注册失败&quot;);
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }finally {
+        //finally block used to close resources 关闭资源块
+        if (stmt!=null){
+            try {
+                stmt.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }try {
+                if (conn !=null){
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+ }
+</code></pre><hr>
+<p><strong>JDBC-增</strong></p>
+<pre><code>import java.sql.*;
+import java.util.Scanner;
+
+public class Demo3UPDATEINSERT {
+
+//驱动名称和数据库URL
+static final String JDBC_DRIVER=&quot;com.mysql.cj.jdbc.Driver&quot;;
+static final String DB_URL=&quot;jdbc:mysql://localhost/xxgc?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;useSSL=false&quot;;
+//数据库用户名和密码
+static final String username=&quot;root&quot;;
+static final String password=&quot;ss707078&quot;;
+
+public static void main(String[] args) {
+    Connection conn;
+    PreparedStatement stmt;
+
+
+    try{
+        Class.forName(JDBC_DRIVER);
+        conn = DriverManager.getConnection(DB_URL,username,password);
+        System.out.println(conn);
+        String sql;
+        sql=&quot;INSERT INTO students (s_id,s_name,s_sex,s_age,s_class) VALUES (?,?,?,?,?)&quot;;
+        stmt=conn.prepareStatement(sql);
+
+        Scanner sc=new Scanner(System.in);
+        System.out.print(&quot;请输入学号：&quot;);
+        int id=sc.nextInt();
+        System.out.println(&quot;请输入姓名：&quot;);
+        String name=sc.next();
+        System.out.println(&quot;请输入性别：&quot;);
+        String sex=sc.next();
+        System.out.println(&quot;请输入年龄：&quot;);
+        int age=sc.nextInt();
+        System.out.println(&quot;请输入班级：&quot;);
+        String bj=sc.next();
+
+        stmt.setInt(1,id);
+        stmt.setString(2,name);
+        stmt.setString(3,sex);
+        stmt.setInt(4,age);
+        stmt.setString(5,bj);
+        stmt.executeUpdate();
+
+        stmt.close();
+        conn.close();
+    } catch(ClassNotFoundException e){
+        e.printStackTrace();
+    }catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+}
+</code></pre><hr>
+<p><strong>JDBC-删</strong></p>
+<pre><code>import java.sql.*;
+import java.util.Scanner;
+
+public class Demo5DELETE {
+
+static final String JDBC_DRIVER=&quot;com.mysql.cj.jdbc.Driver&quot;;
+static final String DB_URL=&quot;jdbc:mysql://localhost/xxgc?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;useSSL=false&quot;;
+//数据库用户名和密码
+static final String username=&quot;root&quot;;
+static final String password=&quot;ss707078&quot;;
+
+public static void main(String[] args) {
+    Connection conn=null;
+    Statement stmt = null;
+
+    try {
+        //加载驱动
+        Class.forName(JDBC_DRIVER);
+        //连接数据库
+        System.out.println(&quot;正在连接数据库...&quot;);
+        conn= DriverManager.getConnection(DB_URL,username,password);
+        System.out.println(&quot;数据库连接成功&quot;);
+        //执行查操作
+        stmt =conn.createStatement();
+        String sql=&quot;SELECT s_id,s_name,s_sex,s_age,s_class FROM students&quot;;
+        ResultSet rs=stmt.executeQuery(sql);
+        while (rs.next()){
+            int id=rs.getInt(&quot;s_id&quot;);
+            int age=rs.getInt(&quot;s_age&quot;);
+            String name=rs.getString(&quot;s_name&quot;);
+            String sex=rs.getString(&quot;s_sex&quot;);
+            String bj=rs.getString(&quot;s_class&quot;);
+
+            System.out.print(&quot; 学号：&quot;+id);
+            System.out.print(&quot;  姓名&quot;+name);
+            System.out.print(&quot;  性别&quot;+sex);
+            System.out.print(&quot;  年龄&quot;+age);
+            System.out.println(&quot;  班级&quot;+bj);
+            System.out.println(&quot;========================================&quot;);
+        }
+        System.out.println(&quot;======请根据学号选择删除的学生========&quot;);
+        Scanner sc=new Scanner(System.in);
+        System.out.println(&quot;请输入学号：&quot;);
+        int no=sc.nextInt();
+        sql=&quot;DELETE FROM  students WHERE s_id=&quot;;
+        stmt=conn.createStatement();
+        stmt.executeUpdate(sql+no);//sql是可以拼接的
+        stmt.close();
+        rs.close();
+        conn.close();
+               } catch (ClassNotFoundException | SQLException e) {
+        e.printStackTrace();
+    }
+  }
+}
+</code></pre><hr>
+<p><strong>JDBC-改</strong></p>
+<pre><code>import java.sql.*;
+import java.util.Scanner;
+
+public class Demo6UPDDATE {
+//驱动名称和数据库URL
+static final String JDBC_DRIVER=&quot;com.mysql.cj.jdbc.Driver&quot;;
+static final String DB_URL=&quot;jdbc:mysql://localhost/xxgc?useUnicode=true&amp;characterEncoding=utf8&amp;serverTimezone=GMT%2B8&amp;useSSL=false&quot;;
+//数据库用户名和密码
+static final String username=&quot;root&quot;;
+static final String password=&quot;ss707078&quot;;
+
+public static void main(String[] args) {
+    Connection conn=null;
+    Statement stmt=null;
+    try {
+        Class.forName(JDBC_DRIVER);
+        conn= DriverManager.getConnection(DB_URL,username,password);
+        stmt=conn.createStatement();
+        String sql;
+        sql=&quot;SELECT s_id,s_name,s_sex,s_age,s_class FROM students&quot;;
+      ResultSet rs=stmt.executeQuery(sql);
+        while (rs.next()){
+          int id=  rs.getInt(&quot;s_id&quot;);
+          int age=  rs.getInt(&quot;s_age&quot;);
+          String name=  rs.getString(&quot;s_name&quot;);
+          String sex=  rs.getString(&quot;s_sex&quot;);
+          String bj=  rs.getString(&quot;s_class&quot;);
+            System.out.println(&quot;==================================================================&quot;);
+            System.out.print(&quot; 学号：&quot;+id);
+            System.out.print(&quot;  姓名：&quot;+name);
+            System.out.print(&quot;  年龄：&quot;+age);
+            System.out.print(&quot;  性别：&quot;+sex);
+            System.out.println(&quot;  班级：&quot;+bj);
+        }
+        System.out.println(&quot;请根据学号选择更改的学生信息&quot;);
+        Scanner sc=new Scanner(System.in);
+        int s_id= sc.nextInt();
+        System.out.println(&quot;请输入要更改的姓名&quot;);
+        String s_name=sc.next();
+        System.out.println(&quot;请输入要更改的年龄&quot;);
+        int s_age=sc.nextInt();
+        System.out.println(&quot;请输入要更改的性别&quot;);
+        String s_sex=sc.next();
+        System.out.println(&quot;请输入要更改的班级&quot;);
+        String s_class=sc.next();
+        sql=&quot;UPDATE students SET s_name=?,s_age=?,s_sex=?,s_class=? WHERE s_id=?&quot;;
+
+        PreparedStatement pstmt=conn.prepareStatement(sql);
+
+
+        pstmt.setString(1,s_name);
+        pstmt.setInt(2,s_age);
+        pstmt.setString(3,s_sex);
+        pstmt.setString(4,s_class);
+        pstmt.setInt(5,s_id);
+       int row=pstmt.executeUpdate();
+       if (row==1){
+           System.out.println(&quot;修改成功&quot;);
+           System.out.println(sql);
+       }else {
+           System.out.println(&quot;修改失败&quot;);
+           System.out.println(sql);
+       }
+       pstmt.close();
+       rs.close();
+       conn.close();
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+}
+}
+</code></pre><hr>
+<p>数据库SQL：</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/03/20/java之jdbc增删查改/" data-id="cjth9f56l0003k0wbm4jh5isp" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-数据库进阶" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/03/20/数据库进阶/" class="article-date">
@@ -93,7 +388,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/20/数据库进阶/" data-id="cjtgmmscj0002ncwbm5kvey6c" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/20/数据库进阶/" data-id="cjth9f56e0002k0wb9sfa7pg9" class="article-share-link">Share</a>
       
       
     </footer>
@@ -129,7 +424,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/19/关于JAVA的学习/" data-id="cjtgmmscg0001ncwb6yuja43n" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/19/关于JAVA的学习/" data-id="cjth9f55k0000k0wbrkcrxipl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -422,7 +717,7 @@ mysql&gt; create procedure p_jiaoshi1()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjtgmmscy0003ncwb428pjqll" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjth9f5730004k0wbnteisc5t" class="article-share-link">Share</a>
       
       
     </footer>
@@ -467,7 +762,7 @@ mysql&gt; create procedure p_jiaoshi1()
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjtgmmscb0000ncwbo0cjmyjs" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjth9f56c0001k0wbnyw1yym7" class="article-share-link">Share</a>
       
       
     </footer>
@@ -506,6 +801,10 @@ mysql&gt; create procedure p_jiaoshi1()
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/03/20/java之jdbc增删查改/">java之jdbc增删查改</a>
+          </li>
         
           <li>
             <a href="/2019/03/20/数据库进阶/">数据库进阶</a>
