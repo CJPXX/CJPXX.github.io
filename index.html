@@ -88,7 +88,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/19/关于JAVA的学习/" data-id="cjtfxpv2600017wwblgohravx" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/19/关于JAVA的学习/" data-id="cjtgjpfp30000bwwb98p2i6jl" class="article-share-link">Share</a>
       
       
     </footer>
@@ -334,24 +334,54 @@ WHERE s_id IN(SELECT s_id FROM cj WHERE ck_cj&lt;60);
 <pre><code>select ck_js ck_name
 FROM kc
 WHERE NOT EXISTS(SELECT * FROM kc WHERE ck_name=&apos;信息工程&apos;);
-</code></pre><p>  截图</p>
-<p>  <img src="https://i.imgur.com/hp3TbH3.png" alt><br>   查询教师表中，若时存在教师授课为“信息工程”的教师，则显示所有教师的姓名和所授课程。</p>
+</code></pre><p>   查询教师表中，若时存在教师授课为“信息工程”的教师，则显示所有教师的姓名和所授课程。</p>
 <pre><code>select ck_js,ck_name
 FROM kc
 WHERE EXISTS(SELECT * FROM kc WHERE ck_name=&apos;信息工程&apos;); 
-</code></pre><p>  截图<br>   <img src="https://i.imgur.com/zjuphP5.png" alt></p>
-<h2 id="7-存储过程和事物"><a href="#7-存储过程和事物" class="headerlink" title="7.存储过程和事物"></a>7.存储过程和事物</h2><p>   在数据库开发过程中，我们经常将一些反复调用的语句放置在一些独立的语句块中，这些独立的语句块我们称之为存储过程。<br><br>   <strong>1.创建和执行存储过程</strong><br>   创建存储过程语法格式如下：</p>
+</code></pre><h2 id="7-存储过程和事物"><a href="#7-存储过程和事物" class="headerlink" title="7.存储过程和事物"></a>7.存储过程和事物</h2><p>   在数据库开发过程中，我们经常将一些反复调用的语句放置在一些独立的语句块中，这些独立的语句块我们称之为存储过程。<br><br>   <strong>1.创建和执行存储过程</strong><br>   创建存储过程语法格式如下：</p>
 <pre><code>CREATE PROCEDOURE sp_name ([proc_parameter[,...]])
 [characteristic...] routine_body
-</code></pre><p> 例如：创建存储事物为 查询教师表，输出所有教“信息工程”的老师的信息<br>  截图:<br>  <img src="https://i.imgur.com/WKgN9NO.png" alt></p>
-<p>   <strong>1.1 创建新的带参数的存储过程</strong></p>
-<p>  截图：<br>  <img src="https://i.imgur.com/9axzVsb.png" alt></p>
-<p>2019/3/19 23:09:24 </p>
+</code></pre><p> 例如：创建存储事物为 查询教师表，输出所有教“信息工程”的老师的信息     </p>
+<pre><code>mysql&gt; delimiter //
+mysql&gt; create procedure p_jiaoshi1()
+       -&gt; begin
+       -&gt; select * from kc where ck_name=&apos;信息工程&apos;;
+       -&gt; end //
+
+    mysql&gt; call p_jiaoshi1();
+       -&gt; //
+ +-------+----------+-------+
+  | ck_id | ck_name | ck_js |
+ +-------+----------+-------+
+  | ch1   | 信息工程  | 杨泰 |
+  | ch6   | 信息工程  | 陈亮 |
+  | ch7   | 信息工程  | 白敏 |
+  | ch8   | 信息工程  | 刘蓉 |
+ +-------+----------+-------+
+</code></pre><p>   <strong>1.1 创建新的带参数的存储过程</strong></p>
+<pre><code>     mysql&gt; create procedure p_jiaoshin(in ck_name1  varchar(10))
+     -&gt; begin
+     -&gt; select * from kc where ck_name=ck_name1;
+     -&gt; end
+     -&gt; //
+
+ mysql&gt; call p_jiaoshin(&apos;信息工程&apos;);
+   s -&gt; //
++-------+----------+-------+
+| ck_id | ck_name  | ck_js |
++-------+----------+-------+
+| ch1   | 信息工程 | 杨泰  |
+| ch6   | 信息工程 | 陈亮  |
+| ch7   | 信息工程 | 白敏  |
+| ch8   | 信息工程 | 刘蓉  |
++-------+----------+-------+
+4 rows in set (0.00 sec)
+</code></pre><p>2019/3/19 23:09:24 </p>
 
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjtfxpv2d00027wwbwwohfdp7" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/数据库基本操作/" data-id="cjtgjpfq00002bwwbmylh8bmm" class="article-share-link">Share</a>
       
       
     </footer>
@@ -396,7 +426,7 @@ WHERE EXISTS(SELECT * FROM kc WHERE ck_name=&apos;信息工程&apos;);
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjtfxpv1z00007wwbncwphnp8" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/03/13/hello-world/" data-id="cjtgjpfpc0001bwwbg7u4x1v1" class="article-share-link">Share</a>
       
       
     </footer>
